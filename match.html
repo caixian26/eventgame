@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기업 짝 맞추기 게임</title>
+    <link rel="stylesheet" href="match.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>기업 짝 맞추기 게임 🏢</h1>
+        
+        <div class="game-info-panel">
+            <div class="timer-bar">
+                <div class="timer-progress"></div>
+            </div>
+            <div class="match-counter">
+                맞춘 쌍: <span id="matchedPairs">0</span> / <span id="totalPairs">0</span>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <div class="level-controls">
+                <button class="level-btn active" data-size="4x3">초급</button>
+                <button class="level-btn" data-size="4x4">중급</button>
+                <!-- ✨ 여기에 수정된 코드 (data-size) ✨ -->
+                <button class="level-btn" data-size="5x4">고급</button>
+            </div>
+            <div class="action-controls">
+                <button id="pauseButton">멈추기</button>
+                <button id="mainRestartButton">다시 시작</button>
+                <a href="index.html" class="home-btn">메인으로</a>
+            </div>
+        </div>
+
+        <section class="memory-game">
+            <!-- 카드는 JavaScript로 동적으로 생성됩니다 -->
+        </section>
+
+        <div class="game-over-modal" id="gameOverModal">
+            <div class="modal-content">
+                <h2 id="modalMessage"></h2>
+                <p id="modalDetail"></p>
+                <button id="modalRestartButton">다시 시작</button>
+            </div>
+        </div>
+
+        <div class="pause-overlay" id="pauseOverlay">
+            <div class="pause-text">일시 정지됨</div>
+        </div>
+    </div>
+
+    <script src="match.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>이미지 퍼즐</title>
+    <link rel="stylesheet" href="puzzle.css">
+</head>
+<body>
+    <div class="game-wrapper" id="gameWrapper">
+        <h1>이미지 퍼즐</h1>
+
+        <div class="level-controls">
+            <button class="level-btn active" data-difficulty="normal">보통 (3x3)</button>
+            <button class="level-btn" data-difficulty="hard">매우 어려움 (4x4)</button>
+        </div>
+        
+        <div id="fullscreen-target">
+            <div id="image-puzzle-container">
+                <div id="image-puzzle-board">
+                    <!-- 힌트 이미지 태그 삭제 -->
+                </div>
+                <div id="image-puzzle-pieces"></div>
+            </div>
+            
+            <div class="overlay" id="startOverlay"><button class="overlay-btn" id="startButton">시작하기</button></div>
+            <div class="overlay hidden" id="pauseOverlay"><div class="overlay-text">일시정지</div></div>
+            <div class="overlay hidden" id="endOverlay">
+                <div class="end-content">
+                    <h2 id="endMessage"></h2>
+                    <p id="endDetails"></p>
+                    <button class="overlay-btn" id="modalRestartButton">다시하기</button>
+                </div>
+            </div>
+            
+            <button id="exitFullscreenBtn" class="exit-fullscreen-btn hidden">✖</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-box">
+                <span class="info-label">이동</span>
+                <span class="info-value" id="moveCounter">0</span>
+            </div>
+            <div class="info-box">
+                <span class="info-label">남은 시간</span>
+                <span class="info-value" id="timer">--</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="pauseBtn">일시정지</button>
+            <button id="retryBtn">다시하기</button>
+            <!-- ✨ 힌트 버튼 삭제 ✨ -->
+            <button id="fullscreenBtn">전체화면</button>
+            <a href="index.html" class="home-btn">메인으로</a>
+        </div>
+    </div>
+    
+    <script src="puzzle.js"></script>
+</body>
+</html>

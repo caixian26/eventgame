@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테크커넥트 런치 행사 게임 리스트</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- 폰트 추가: Noto Sans KR (기본), IBM Plex Sans KR (제목용) -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="teconnect_logo.png" alt="(주)테크커넥트 로고" class="logo">
+            <!-- 제목 수정 -->
+            <h1>테크커넥트 런치 행사 게임 리스트</h1>
+            <!-- 부제 수정 -->
+            <p>테크커넥트 전자칠판과 함께하는 런치 이벤트!<br>원하는 게임을 선택하고 즐거운 경험을 만들어보세요.</p>
+        </header>
+
+        <main class="game-selector">
+            <a href="maze.html" class="game-card">
+                <div class="game-icon" id="maze-icon"></div>
+                <div class="game-info">
+                    <h2>미로 탈출</h2>
+                    <p class="description">길을 찾아 탈출하라!</p>
+                    <!-- 1인용/2인용 배지 삭제 -->
+                </div>
+            </a>
+
+            <a href="match.html" class="game-card">
+                <div class="game-icon" id="match-icon"></div>
+                <div class="game-info">
+                    <h2>짝 맞추기</h2>
+                    <!-- 설명 수정 -->
+                    <p class="description">같은 기업을 찾아라!</p>
+                    <!-- 1인용/2인용 배지 삭제 -->
+                </div>
+            </a>
+
+            <a href="puzzle.html" class="game-card">
+                <div class="game-icon" id="puzzle-icon"></div>
+                <div class="game-info">
+                    <h2>이미지 퍼즐</h2>
+                    <p class="description">조각을 맞춰 완성하라!</p>
+                    <!-- 1인용/2인용 배지 삭제 -->
+                </div>
+            </a>
+
+            <a href="catchmind.html" class="game-card">
+                <div class="game-icon" id="catchmind-icon"></div>
+                <div class="game-info">
+                    <h2>캐치마인드</h2>
+                    <!-- 설명 수정 -->
+                    <p class="description">그림을 서로 맞춰라!</p>
+                    <!-- 1인용/2인용 배지 삭제 -->
+                </div>
+            </a>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 (주)테크커넥트. All Rights Reserved.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

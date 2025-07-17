@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>미로 탈출 게임</title>
+    <link rel="stylesheet" href="maze.css">
+</head>
+<body>
+    <div class="game-wrapper" id="gameWrapper">
+        <div class="header-panel">
+            <h1>거북이의 토끼 따라잡기!</h1>
+            <div class="timer-display">토끼 휴식 시간: <span id="timer">--</span></div>
+        </div>
+        
+        <div id="fullscreen-target">
+            <div class="canvas-container">
+                <canvas id="mazeCanvas"></canvas>
+                
+                <div class="overlay" id="startOverlay">
+                    <button class="overlay-btn" id="startButton">시작하기</button>
+                </div>
+                <div class="overlay" id="pauseOverlay">
+                    <div class="overlay-text">일시정지</div>
+                </div>
+                <div class="overlay" id="endOverlay">
+                    <div class="end-content">
+                        <h2 id="endMessage"></h2>
+                        <p id="endTime"></p>
+                        <button class="overlay-btn" id="modalRestartButton">다시하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="pauseBtn">일시정지</button>
+            <button id="retryBtn">다시하기</button>
+            <button id="fullscreenBtn">전체화면</button>
+            <a href="index.html" class="home-btn">메인으로</a>
+        </div>
+    </div>
+    <script src="maze.js"></script>
+</body>
+</html>

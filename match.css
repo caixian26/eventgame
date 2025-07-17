@@ -1,0 +1,182 @@
+/* --- ✨ 여기에 수정/추가된 코드 (폰트 불러오기) ✨ --- */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+* { padding: 0; margin: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f0f4f8;
+    color: #333;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+h1 { margin-bottom: 15px; color: #2c3e50; }
+
+.game-info-panel { margin-bottom: 15px; }
+
+.timer-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.timer-progress {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #6abcea, #43e97b, #ffdd57, #ff5151);
+    border-radius: 8px;
+    transition: width 1s linear;
+}
+
+.match-counter {
+    margin-top: 8px;
+    font-size: 1.2em;
+    color: #555;
+}
+
+.game-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.level-controls { display: flex; gap: 8px; }
+.action-controls { display: flex; gap: 8px; position: relative; z-index: 101; }
+
+.level-btn, .action-controls button, .home-btn {
+    padding: 8px 16px;
+    border: 2px solid #ddd;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: #333;
+    font-size: 1em;
+}
+
+.level-btn:hover, .action-controls button:hover, .home-btn:hover {
+    border-color: #66a6ff;
+    color: #66a6ff;
+}
+
+.level-btn.active { background-color: #66a6ff; color: white; border-color: #66a6ff; }
+#pauseButton { background-color: #ffc107; border-color: #ffc107; color: white; }
+#mainRestartButton { background-color: #28a745; border-color: #28a745; color: white; }
+.home-btn { background-color: #6c757d; border-color: #6c757d; color: white; }
+
+.memory-game { display: grid; gap: 10px; perspective: 1000px; }
+
+.memory-card {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.memory-card.flip { transform: rotateY(180deg); }
+
+.front-face, .back-face {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    word-break: keep-all;
+    line-height: 1.2;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* --- ✨ 여기에 수정/추가된 코드 (앞면 카드 스타일) ✨ --- */
+.front-face {
+    background: #fff;
+    transform: rotateY(180deg);
+    font-family: 'IBM Plex Sans KR', sans-serif; /* 예쁜 폰트 적용 */
+    font-size: clamp(14px, 3vw, 22px); /* 폰트 크기를 전체적으로 키움 */
+    font-weight: 500; /* 살짝 두껍게 하여 가독성 향상 */
+    color: #1a237e; /* 테마에 맞는 포인트 컬러로 주목도 상승 */
+}
+
+.back-face {
+    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+    color: white;
+    font-size: 2.5em; /* 뒷면 '?' 크기는 그대로 유지하거나 살짝 조정 */
+}
+.back-face::before { content: '?'; }
+
+.memory-card.matched {
+    transform: rotateY(180deg);
+    animation: match-animation 0.5s;
+    cursor: default;
+}
+
+@keyframes match-animation {
+    0% { transform: rotateY(180deg) scale(1); }
+    50% { transform: rotateY(180deg) scale(1.1); }
+    100% { transform: rotateY(180deg) scale(1); }
+}
+
+.game-over-modal, .pause-overlay {
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    border-radius: 20px;
+}
+
+.pause-text { font-size: 32px; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-out;
+    position: relative;
+    z-index: 101;
+}
+
+#modalDetail { margin-top: 10px; color: #555; font-size: 1.2em; }
+#modalRestartButton { margin-top: 20px; padding: 12px 25px; font-size: 18px; font-weight: bold; color: white; background-color: #66a6ff; border: none; border-radius: 10px; cursor: pointer; transition: background-color 0.3s; }
+#modalRestartButton:hover { background-color: #4f8bda; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 520px) {
+    .game-controls { flex-direction: column; }
+}
