@@ -1,96 +1,75 @@
-/* --- ✨ 여기에 수정/추가된 코드 (폰트 불러오기) ✨ --- */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
 * { padding: 0; margin: 0; box-sizing: border-box; }
+
+/* ✨ [핵심 수정 1] Body를 Flex 컨테이너로 만들어 화면 전체를 제어 */
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* 스크롤 절대 금지 */
+}
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
     background: #f0f4f8;
     color: #333;
+    padding: 10px;
 }
 
+/* ✨ [핵심 수정 2] 컨테이너를 Flex 컬럼으로 만들고, 최대 높이/너비 설정 */
 .game-container {
     width: 100%;
     max-width: 800px;
-    padding: 20px;
+    height: 100%;
+    max-height: 95vh; /* 화면 높이를 거의 꽉 채우도록 */
+    padding: clamp(10px, 2vw, 20px); /* 화면 크기에 따른 유동적인 패딩 */
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     text-align: center;
     position: relative;
-}
-
-h1 { margin-bottom: 15px; color: #2c3e50; }
-
-.game-info-panel { margin-bottom: 15px; }
-
-.timer-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.timer-progress {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #6abcea, #43e97b, #ffdd57, #ff5151);
-    border-radius: 8px;
-    transition: width 1s linear;
-}
-
-.match-counter {
-    margin-top: 8px;
-    font-size: 1.2em;
-    color: #555;
-}
-
-.game-controls {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-direction: column;
+    gap: 10px; /* 요소 간의 간격 */
 }
 
+/* 상단 요소들은 자신의 크기만큼만 차지하고 줄어들지 않음 */
+h1 { margin: 0; color: #2c3e50; flex-shrink: 0; }
+.game-info-panel { margin: 0; flex-shrink: 0; }
+.game-controls { margin: 0; flex-shrink: 0; }
+
+.timer-bar { width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden; }
+.timer-progress { width: 100%; height: 100%; background: linear-gradient(90deg, #6abcea, #43e97b, #ffdd57, #ff5151); border-radius: 8px; transition: width 1s linear; }
+.match-counter { margin-top: 8px; font-size: 1.2em; color: #555; }
+
+.game-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .level-controls { display: flex; gap: 8px; }
 .action-controls { display: flex; gap: 8px; position: relative; z-index: 101; }
 
-.level-btn, .action-controls button, .home-btn {
-    padding: 8px 16px;
-    border: 2px solid #ddd;
-    background-color: #f8f8f8;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    color: #333;
-    font-size: 1em;
-}
-
-.level-btn:hover, .action-controls button:hover, .home-btn:hover {
-    border-color: #66a6ff;
-    color: #66a6ff;
-}
-
+.level-btn, .action-controls button, .home-btn { padding: 8px 16px; border: 2px solid #ddd; background-color: #f8f8f8; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s ease; text-decoration: none; color: #333; font-size: 1em; }
+.level-btn:hover, .action-controls button:hover, .home-btn:hover { border-color: #66a6ff; color: #66a6ff; }
 .level-btn.active { background-color: #66a6ff; color: white; border-color: #66a6ff; }
 #pauseButton { background-color: #ffc107; border-color: #ffc107; color: white; }
 #mainRestartButton { background-color: #28a745; border-color: #28a745; color: white; }
 .home-btn { background-color: #6c757d; border-color: #6c757d; color: white; }
 
-.memory-game { display: grid; gap: 10px; perspective: 1000px; }
+/* ✨ [핵심 수정 3] 게임판이 남은 모든 공간을 차지하도록 설정 */
+.memory-game {
+    display: grid;
+    gap: 10px;
+    perspective: 1000px;
+    flex-grow: 1; /* 핵심: 남은 공간을 모두 차지 */
+    min-height: 0; /* Flexbox 자식 요소의 넘침 방지 트릭 */
+}
 
+/* ✨ [핵심 수정 4] 카드의 aspect-ratio 제거, 셀에 꽉 차도록 설정 */
 .memory-card {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: 100%;
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.6s;
@@ -115,20 +94,20 @@ h1 { margin-bottom: 15px; color: #2c3e50; }
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* --- ✨ 여기에 수정/추가된 코드 (앞면 카드 스타일) ✨ --- */
 .front-face {
     background: #fff;
     transform: rotateY(180deg);
-    font-family: 'IBM Plex Sans KR', sans-serif; /* 예쁜 폰트 적용 */
-    font-size: clamp(14px, 3vw, 22px); /* 폰트 크기를 전체적으로 키움 */
-    font-weight: 500; /* 살짝 두껍게 하여 가독성 향상 */
-    color: #1a237e; /* 테마에 맞는 포인트 컬러로 주목도 상승 */
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    /* ✨ [핵심 수정 5] 폰트 크기를 vmin 단위로 변경하여 가로/세로 중 짧은 쪽에 반응 */
+    font-size: clamp(10px, 2vmin, 18px);
+    font-weight: 500;
+    color: #1a237e;
 }
 
 .back-face {
     background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
     color: white;
-    font-size: 2.5em; /* 뒷면 '?' 크기는 그대로 유지하거나 살짝 조정 */
+    font-size: clamp(1.5em, 5vmin, 3em);
 }
 .back-face::before { content: '?'; }
 

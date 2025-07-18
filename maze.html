@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>미로 탈출 게임</title>
     <link rel="stylesheet" href="maze.css">
+    <!-- ✨ 랭킹 CSS 추가 -->
+    <link rel="stylesheet" href="ranking.css">
 </head>
 <body>
     <div class="game-wrapper" id="gameWrapper">
@@ -31,15 +33,36 @@
                     </div>
                 </div>
             </div>
+            
+            <button id="exitFullscreenBtn" class="exit-fullscreen-btn">✖</button>
         </div>
 
         <div class="controls">
+            <!-- ✨ 랭킹 보기 버튼 추가 -->
+            <button id="showRankingBtn">랭킹 보기</button>
             <button id="pauseBtn">일시정지</button>
             <button id="retryBtn">다시하기</button>
             <button id="fullscreenBtn">전체화면</button>
             <a href="index.html" class="home-btn">메인으로</a>
         </div>
     </div>
+    
+    <!-- ✨ 랭킹판 HTML 구조 추가 -->
+    <div id="ranking-board">
+        <div class="ranking-header">
+            <span>🏆 명예의 전당 (<span id="ranking-level-name"></span>) 🏆</span>
+            <button id="ranking-close-btn">×</button>
+        </div>
+        <div class="ranking-list-container">
+            <ul id="ranking-list"></ul>
+        </div>
+        <div class="ranking-footer">
+            <button id="ranking-reset-btn">랭킹 초기화</button>
+        </div>
+    </div>
+
     <script src="maze.js"></script>
+    <!-- ✨ 랭킹 JS 추가 -->
+    <script src="ranking.js"></script>
 </body>
 </html>

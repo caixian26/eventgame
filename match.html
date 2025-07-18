@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>기업 짝 맞추기 게임</title>
     <link rel="stylesheet" href="match.css">
+    <link rel="stylesheet" href="ranking.css">
 </head>
 <body>
     <div class="game-container">
@@ -23,10 +24,10 @@
             <div class="level-controls">
                 <button class="level-btn active" data-size="4x3">초급</button>
                 <button class="level-btn" data-size="4x4">중급</button>
-                <!-- ✨ 여기에 수정된 코드 (data-size) ✨ -->
                 <button class="level-btn" data-size="5x4">고급</button>
             </div>
             <div class="action-controls">
+                <button id="showRankingBtn">랭킹 보기</button>
                 <button id="pauseButton">멈추기</button>
                 <button id="mainRestartButton">다시 시작</button>
                 <a href="index.html" class="home-btn">메인으로</a>
@@ -50,6 +51,21 @@
         </div>
     </div>
 
+    <!-- ✨ 랭킹판 HTML 구조 수정 -->
+    <div id="ranking-board">
+        <div class="ranking-header">
+            <span>🏆 명예의 전당 (<span id="ranking-level-name"></span>) 🏆</span>
+            <button id="ranking-close-btn">×</button>
+        </div>
+        <div class="ranking-list-container">
+            <ul id="ranking-list"></ul>
+        </div>
+        <div class="ranking-footer">
+            <button id="ranking-reset-btn">랭킹 초기화</button>
+        </div>
+    </div>
+
     <script src="match.js"></script>
+    <script src="ranking.js"></script>
 </body>
 </html>

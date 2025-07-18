@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const levelButtons = document.querySelectorAll('.level-btn');
     const matchedPairsDisplay = document.getElementById('matchedPairs');
     const totalPairsDisplay = document.getElementById('totalPairs');
+    const showRankingBtn = document.getElementById('showRankingBtn');
+    // ✨ 랭킹판 제목을 위한 span 요소 추가
+    const rankingLevelNameEl = document.getElementById('ranking-level-name');
+
+    // ✨ 게임 고유 ID 정의
+    const GAME_ID = 'match';
 
     const ourCompany = '(주)테크커넥트';
     const companyList = [
@@ -32,13 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'Mastech', '오픈스택㈜', '㈜에이원알폼', '제닉스㈜'
     ];
 
-    // --- ✨ 여기에 수정된 코드 (난이도별 판 크기) ✨ ---
+    // ✨ 난이도별 표시 이름을 추가
     const gameConfigs = {
-        '4x3': { rows: 3, cols: 4, time: 60 },  // 초급 (6쌍) - 가로 4, 세로 3
-        '4x4': { rows: 4, cols: 4, time: 90 },  // 중급 (8쌍) - 가로 4, 세로 4
-        '5x4': { rows: 4, cols: 5, time: 180 }, // 고급 (10쌍) - 가로 5, 세로 4
+        '4x3': { rows: 3, cols: 4, time: 60, name: '초급' },
+        '4x4': { rows: 4, cols: 4, time: 90, name: '중급' },
+        '5x4': { rows: 4, cols: 5, time: 180, name: '고급' },
     };
-    let currentConfig = gameConfigs['4x3'];
+    
+    let currentLevelId = '4x3';
+    let currentConfig = gameConfigs[currentLevelId];
 
     let cards = [];
     let firstCard = null, secondCard = null;
@@ -78,12 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createCards() {
         const pairCount = (currentConfig.rows * currentConfig.cols) / 2;
-        const otherCompanies = [...companyList];
+        const otherCompanies = companyList.filter(c => c !== ourCompany);
         otherCompanies.sort(() => 0.5 - Math.random());
-        const neededCompanies = pairCount - 1;
-        const selectedCompanies = otherCompanies.slice(0, neededCompanies);
-        const usedItems = [ourCompany, ...selectedCompanies];
-        const cardSet = [...usedItems, ...usedItems];
+        const neededOtherCompanyCount = pairCount - 1;
+        const selectedOtherCompanies = otherCompanies.slice(0, neededOtherCompanyCount);
+        const finalUniqueItems = [ourCompany, ...selectedOtherCompanies];
+        const cardSet = [...finalUniqueItems, ...finalUniqueItems];
 
         cards = cardSet.map(item => {
             const card = document.createElement('div');
@@ -197,6 +205,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const seconds = timeElapsed % 60;
                 modalMessage.textContent = '🎉 축하합니다! 성공! 🎉';
                 modalDetail.textContent = `걸린 시간: ${minutes > 0 ? `${minutes}분 ` : ''}${seconds}초`;
+                
+                // ✨ 랭킹 모듈 호출 시, 게임 ID와 난이도 ID를 조합한 고유 키와 제목을 전달
+                const storageKey = `${GAME_ID}_${currentLevelId}`;
+                rankingModule.addScore(storageKey, timeElapsed, currentConfig.name);
+
             } else {
                 modalMessage.textContent = '😭 아쉽네요, 시간 초과! 😭';
                 modalDetail.textContent = '다시 도전해보세요!';
@@ -209,9 +222,18 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             levelButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            currentConfig = gameConfigs[button.dataset.size];
+            
+            currentLevelId = button.dataset.size;
+            currentConfig = gameConfigs[currentLevelId];
+            
             startGame();
         });
+    });
+
+    showRankingBtn.addEventListener('click', () => {
+        // ✨ 랭킹 모듈에 고유 키와 제목을 전달
+        const storageKey = `${GAME_ID}_${currentLevelId}`;
+        rankingModule.show(storageKey, currentConfig.name);
     });
 
     pauseButton.addEventListener('click', togglePause);

@@ -1,0 +1,135 @@
+/* ranking.css */
+#ranking-board {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 280px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+}
+
+#ranking-board.visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+}
+
+.ranking-header {
+    padding: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#ranking-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+    padding: 0 5px;
+}
+#ranking-close-btn:hover {
+    color: #333;
+}
+
+.ranking-list-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#ranking-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#ranking-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95em;
+}
+
+#ranking-list li:last-child {
+    border-bottom: none;
+}
+
+#ranking-list .rank {
+    font-weight: bold;
+    color: #e74c3c;
+    margin-right: 10px;
+    flex-shrink: 0;
+    width: 40px;
+    text-align: left;
+}
+
+#ranking-list .name {
+    flex-grow: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#ranking-list .time {
+    font-weight: bold;
+    color: #3498db;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+/* ✨ 랭킹 초기화 버튼 스타일 추가 */
+.ranking-footer {
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    text-align: right;
+    border-top: 1px solid #eee;
+}
+
+#ranking-reset-btn {
+    padding: 6px 12px;
+    border: 1px solid #d9534f;
+    background-color: transparent;
+    color: #d9534f;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+}
+
+#ranking-reset-btn:hover {
+    background-color: #d9534f;
+    color: white;
+}
+
+
+.ranking-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+.ranking-list-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+.ranking-list-container::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 4px;
+}

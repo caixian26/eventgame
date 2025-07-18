@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 1. DOM 요소 선택 ---
     const wrapper = document.getElementById('gameWrapper');
     const fullscreenTarget = document.getElementById('fullscreen-target');
     const canvas = document.getElementById('mazeCanvas');
@@ -14,12 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerEl = document.getElementById('timer');
     const endMessageEl = document.getElementById('endMessage');
     const endTimeEl = document.getElementById('endTime');
+    const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+    // ✨ 랭킹 관련 DOM 요소 추가
+    const showRankingBtn = document.getElementById('showRankingBtn');
+    const rankingLevelNameEl = document.getElementById('ranking-level-name');
 
+    // ✨ 게임 고유 ID 및 이름 정의
+    const GAME_ID = 'maze';
+    const GAME_TITLE = '미로 탈출';
+
+    // --- 2. 게임 상태 변수 ---
     let cols, rows, cellSize, maze, player, rabbit, stack = [];
     let isGameRunning = false, isPaused = false, isDragging = false;
     let startTime, timerInterval, timeLeft;
     const gameTime = 300; // 5분
 
+    // --- 3. 미로 생성 관련 로직 ---
     class Cell {
         constructor(c, r) { this.c = c; this.r = r; this.walls = { top: true, right: true, bottom: true, left: true }; this.visited = false; }
         draw() { const x = this.c * cellSize; const y = this.r * cellSize; ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--wall-color'); ctx.lineWidth = 4; if (this.walls.top) { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + cellSize, y); ctx.stroke(); } if (this.walls.right) { ctx.beginPath(); ctx.moveTo(x + cellSize, y); ctx.lineTo(x + cellSize, y + cellSize); ctx.stroke(); } if (this.walls.bottom) { ctx.beginPath(); ctx.moveTo(x + cellSize, y + cellSize); ctx.lineTo(x, y + cellSize); ctx.stroke(); } if (this.walls.left) { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + cellSize); ctx.stroke(); } }
@@ -28,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateMaze() { for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) maze[r][c] = new Cell(c, r); let current = maze[0][0]; current.visited = true; stack.push(current); while (stack.length > 0) { let neighbor = current.getNeighbors(); if (neighbor) { removeWalls(current, neighbor); current = neighbor; current.visited = true; stack.push(current); } else { current = stack.pop(); } } }
     function removeWalls(a, b) { const dc = a.c - b.c, dr = a.r - b.r; if (dc === 1) { a.walls.left = false; b.walls.right = false; } else if (dc === -1) { a.walls.right = false; b.walls.left = false; } if (dr === 1) { a.walls.top = false; b.walls.bottom = false; } else if (dr === -1) { a.walls.bottom = false; b.walls.top = false; } }
 
+    // --- 4. 게임 초기화 및 리사이즈 로직 ---
     function setup() {
         const canvasSize = canvas.getBoundingClientRect().width;
         cellSize = canvasSize / 20;
@@ -42,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function redrawOnResize() {
+        if (!isGameRunning) return;
         const playerXRatio = player.x / (cols * cellSize);
         const playerYRatio = player.y / (rows * cellSize);
         const canvasSize = canvas.getBoundingClientRect().width;
@@ -57,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         draw();
     }
 
+    // --- 5. 그리기 및 게임 루프 ---
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (!maze) return;
@@ -69,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function gameLoop() { if (!isGameRunning || isPaused) return; draw(); checkWin(); requestAnimationFrame(gameLoop); }
 
+    // --- 6. 플레이어 이동 및 충돌 감지 ---
     function movePlayer(targetX, targetY) {
         const dx = targetX - player.x;
         const dy = targetY - player.y;
@@ -104,11 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkWin() { const distance = Math.hypot(player.x - rabbit.x, player.y - rabbit.y); if (distance < player.radius) { endGame(true); } }
     
-    // --- ✨ 타이머 중복 실행 버그 수정 (핵심) ✨ ---
+    // --- 7. 게임 상태 제어 함수 (시작, 종료, 타이머 등) ---
     function startTimer() {
-        // 기존에 실행 중인 타이머가 있다면 확실하게 제거
         clearInterval(timerInterval);
-
         startTime = Date.now();
         timeLeft = gameTime;
         timerEl.textContent = timeLeft;
@@ -123,20 +136,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startGame() { isGameRunning = true; isPaused = false; startOverlay.classList.add('hidden'); endOverlay.classList.add('hidden'); pauseOverlay.classList.add('hidden'); pauseBtn.textContent = '일시정지'; setup(); startTimer(); requestAnimationFrame(gameLoop); }
-    function endGame(isSuccess) { isGameRunning = false; clearInterval(timerInterval); endOverlay.classList.remove('hidden'); if (isSuccess) { const timeTaken = Math.floor((Date.now() - startTime) / 1000); endMessageEl.textContent = '🎉 따라잡았습니다! 🎉'; endTimeEl.textContent = `걸린 시간: ${timeTaken}초`; } else { endMessageEl.textContent = '😭 시간 초과! 😭'; endTimeEl.textContent = '다시 도전해보세요!'; } }
+    
+    // ✨ endGame 함수 수정
+    function endGame(isSuccess) { 
+        isGameRunning = false; 
+        clearInterval(timerInterval); 
+        endOverlay.classList.remove('hidden'); 
+        if (isSuccess) { 
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000); 
+            endMessageEl.textContent = '🎉 따라잡았습니다! 🎉'; 
+            endTimeEl.textContent = `걸린 시간: ${timeTaken}초`;
+            
+            // ✨ 랭킹 모듈 호출
+            // 이 게임은 난이도가 없으므로 GAME_ID를 그대로 storageKey로 사용
+            rankingModule.addScore(GAME_ID, timeTaken, GAME_TITLE);
+
+        } else { 
+            endMessageEl.textContent = '😭 시간 초과! 😭'; 
+            endTimeEl.textContent = '다시 도전해보세요!'; 
+        } 
+    }
+    
     function togglePause() { if (!isGameRunning) return; isPaused = !isPaused; pauseOverlay.classList.toggle('hidden', !isPaused); pauseBtn.textContent = isPaused ? '계속하기' : '일시정지'; }
     function toggleFullscreen() { if (!document.fullscreenElement) { fullscreenTarget.requestFullscreen().catch(err => alert(`전체화면 모드를 사용할 수 없습니다: ${err.message}`)); } else { document.exitFullscreen(); } }
 
+    // --- 8. 사용자 입력 처리 (마우스/터치) ---
     function getPos(e) { const rect = canvas.getBoundingClientRect(); const scaleX = canvas.width / rect.width; const scaleY = canvas.height / rect.height; const clientX = e.clientX || e.touches[0].clientX; const clientY = e.clientY || e.touches[0].clientY; return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY }; }
     function onInteractionStart(e) { if (!isGameRunning || isPaused) return; const pos = getPos(e); const distance = Math.hypot(pos.x - player.x, pos.y - player.y); if (distance < player.radius) { isDragging = true; canvas.classList.add('grabbing'); } }
     function onInteractionMove(e) { if (!isDragging || !isGameRunning || isPaused) return; e.preventDefault(); const pos = getPos(e); movePlayer(pos.x, pos.y); }
     function onInteractionEnd() { isDragging = false; canvas.classList.remove('grabbing'); }
 
+    // --- 9. 이벤트 리스너 연결 ---
     startBtn.addEventListener('click', startGame);
     modalRestartButton.addEventListener('click', startGame);
     retryBtn.addEventListener('click', startGame);
     pauseBtn.addEventListener('click', togglePause);
     fullscreenBtn.addEventListener('click', toggleFullscreen);
+    
+    // ✨ 랭킹 보기 버튼 이벤트 리스너 추가
+    showRankingBtn.addEventListener('click', () => {
+        // 이 게임은 난이도가 없으므로 GAME_ID를 그대로 storageKey로 사용
+        rankingModule.show(GAME_ID, GAME_TITLE);
+    });
+    
+    exitFullscreenBtn.addEventListener('click', () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+    });
+
     canvas.addEventListener('mousedown', onInteractionStart);
     canvas.addEventListener('mousemove', onInteractionMove);
     window.addEventListener('mouseup', onInteractionEnd);
@@ -146,8 +194,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleResize() { if (isGameRunning) { redrawOnResize(); } else { setup(); } }
     window.addEventListener('resize', handleResize);
-    document.addEventListener('fullscreenchange', () => { setTimeout(handleResize, 100); });
 
+    document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement) {
+            exitFullscreenBtn.style.display = 'block';
+        } else {
+            exitFullscreenBtn.style.display = 'none';
+        }
+        setTimeout(handleResize, 100);
+    });
+
+    // --- 10. 초기화 ---
     endOverlay.classList.add('hidden');
     pauseOverlay.classList.add('hidden');
     startOverlay.classList.remove('hidden');
