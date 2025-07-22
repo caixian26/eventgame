@@ -1,3 +1,5 @@
+/* --- 전체 race.js 코드 (아이콘 이미지 적용) --- */
+
 document.addEventListener('DOMContentLoaded', () => {
     const startLane = document.getElementById('start-lane');
     const finishLane = document.getElementById('finish-lane');
@@ -11,16 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const SPRITE_FRAMES = 8;
     const FRAME_WIDTH = 80;
     const FRAME_HEIGHT = 80;
-    // ✨ [핵심 수정] 경주 시간을 4초에서 6초로 늘려 속도를 늦춤
     const RACE_DURATION = 6;
 
+    // ✨ [핵심 수정] 아이콘 이미지 파일명을 위한 iconImage 속성 추가
     const horseData = [
-        { name: '천리마', icon: '🐎', sprite: 'horse_천리마.png' },
-        { name: '적토마', icon: '🐎', sprite: 'horse_적토마.png' },
-        { name: '백마', icon: '🐎', sprite: 'horse_백마.png' },
-        { name: '흑마', icon: '🐎', sprite: 'horse_흑마.png' },
-        { name: '조랑말', icon: '🐎', sprite: 'horse_조랑말.png' },
-        { name: '유니콘', icon: '🦄', sprite: 'horse_유니콘.png' }
+        { name: '천리마', iconImage: 'horse_천리마_icon.png', sprite: 'horse_천리마.png' },
+        { name: '적토마', iconImage: 'horse_적토마_icon.png', sprite: 'horse_적토마.png' },
+        { name: '백마', iconImage: 'horse_백마_icon.png', sprite: 'horse_백마.png' },
+        { name: '흑마', iconImage: 'horse_흑마_icon.png', sprite: 'horse_흑마.png' },
+        { name: '조랑말', iconImage: 'horse_조랑말_icon.png', sprite: 'horse_조랑말.png' },
+        { name: '유니콘', iconImage: 'horse_유니콘_icon.png', sprite: 'horse_유니콘.png' }
     ];
     
     const prizeData = [
@@ -48,7 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const horseEl = document.createElement('div');
             horseEl.className = 'horse';
             horseEl.dataset.index = index;
-            horseEl.innerHTML = `<span class="horse-icon">${horse.icon}</span><span>${horse.name}</span>`;
+            // ✨ [핵심 수정] 이모지 span 대신 img 태그를 사용하도록 변경
+            horseEl.innerHTML = `<img class="horse-icon-img" src="${horse.iconImage}" alt="${horse.name}"><span>${horse.name}</span>`;
             horseEl.addEventListener('click', startRace);
             startLane.appendChild(horseEl);
         });
@@ -63,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(createTrackPoints, 0);
     }
 
+    // ... (이하 나머지 JS 코드는 이전과 동일합니다) ...
     function createTrackPoints() {
         const trackRect = raceTrack.getBoundingClientRect();
         const trackWidth = raceTrack.clientWidth;
@@ -132,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             runner.style.animation = `run-on-path ${RACE_DURATION}s ease-in-out forwards, run-sprite 0.8s steps(${SPRITE_FRAMES}) infinite`;
         };
         horseImg.onerror = () => {
-            runner.textContent = selectedHorseData.icon;
+            runner.textContent = '🐎'; // Fallback to emoji
             runner.style.fontSize = '2.5rem';
             runner.style.display = 'flex';
             runner.style.justifyContent = 'center';
