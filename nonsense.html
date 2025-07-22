@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스피드 넌센스 퀴즈</title>
+    <link rel="stylesheet" href="nonsense.css">
+    <link rel="stylesheet" href="ranking.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>⚡ 스피드 넌센스 퀴즈 🤪</h1>
+        
+        <div class="game-info-panel">
+            <div class="timer-bar"><div id="timer-progress" class="timer-progress"></div></div>
+            <div class="status-bar">
+                <span id="score-display">점수: 0점</span>
+                <span id="progress-display">문제: 0/5</span>
+            </div>
+        </div>
+
+        <!-- ✨ [핵심 수정] 오버레이를 이 안으로 이동하여 판서 영역만 덮도록 함 -->
+        <div class="game-area">
+            <div class="quiz-area">
+                <p id="quiz-question">아래 '시작하기' 버튼을 눌러주세요!</p>
+            </div>
+            <div class="hint-area">
+                <p id="hint-text"></p>
+            </div>
+            <div class="drawing-area-wrapper">
+                <canvas id="drawing-canvas"></canvas>
+            </div>
+            <!-- 시작/일시정지 오버레이 -->
+            <div id="overlay" class="overlay visible">
+                <div class="overlay-content">
+                    <button id="start-btn">시작하기</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button id="hint-btn" disabled>힌트 보기</button>
+            <button id="answer-btn" disabled>정답 확인</button>
+            <button id="pause-btn" disabled>일시정지</button>
+            <button id="restart-btn-main">다시하기</button>
+            <a href="index.html" class="home-btn">메인으로</a>
+        </div>
+    </div>
+
+    <!-- 정답 확인 모달 -->
+    <div id="answer-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>정답은...</h2>
+            <p id="modal-answer-text"></p>
+            <div class="ox-buttons">
+                <button id="correct-btn" class="ox-btn">O (맞혔어요!)</button>
+                <button id="incorrect-btn" class="ox-btn">X (틀렸어요...)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 게임 결과 모달 -->
+    <div id="result-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="result-title">게임 종료!</h2>
+            <p id="final-score-text"></p>
+            <div class="result-buttons">
+                <button id="show-ranking-btn">랭킹 보기/등록</button>
+                <button id="restart-btn-modal">다시하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 랭킹 보드 (ranking.js가 제어) -->
+    <div id="ranking-board">
+        <div class="ranking-header">
+            <span>🏆 명예의 전당 (<span id="ranking-level-name"></span>) 🏆</span>
+            <button id="ranking-close-btn">×</button>
+        </div>
+        <div class="ranking-list-container">
+            <ul id="ranking-list"></ul>
+        </div>
+        <div class="ranking-footer">
+            <button id="ranking-reset-btn">랭킹 초기화</button>
+        </div>
+    </div>
+
+    <script src="nonsense.js"></script>
+    <script src="ranking.js"></script>
+</body>
+</html>

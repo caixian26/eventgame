@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // ✨ 랭킹 모듈 호출
             // 이 게임은 난이도가 없으므로 GAME_ID를 그대로 storageKey로 사용
-            rankingModule.addScore(GAME_ID, timeTaken, GAME_TITLE);
+            rankingModule.addScore(GAME_ID, { time: timeTaken }, GAME_TITLE);
 
         } else { 
             endMessageEl.textContent = '😭 시간 초과! 😭'; 

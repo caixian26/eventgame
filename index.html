@@ -13,13 +13,14 @@
     <div class="container">
         <header class="header">
             <img src="teconnect_logo.png" alt="(주)테크커넥트 로고" class="logo">
-            <!-- ✨ 제목 수정 ✨ -->
-            <h1>테크커넥트 게임 이벤트</h1>
-            <!-- ✨ 부제목 수정 ✨ -->
-            <p>테크커넥트 전자칠판과 함께하는 체험 이벤트!<br>원하는 게임을 선택하고 즐거운 경험을 만들어보세요.</p>
+            <div class="title-group">
+                <h1>테크커넥트 게임 이벤트</h1>
+                <p>테크커넥트 전자칠판과 함께하는 체험 이벤트!<br>원하는 게임을 선택하고 즐거운 경험을 만들어보세요.</p>
+            </div>
         </header>
 
-        <main class="game-selector">
+        <main class="game-grid">
+            <!-- 첫 번째 줄 -->
             <a href="maze.html" class="game-card">
                 <div class="game-icon" id="maze-icon"></div>
                 <div class="game-info">
@@ -31,7 +32,7 @@
                 <div class="game-icon" id="match-icon"></div>
                 <div class="game-info">
                     <h2>짝 맞추기</h2>
-                    <p class="description">같은 기업을 찾아라!</p>
+                    <p class="description">같은 짝을 찾아라!</p>
                 </div>
             </a>
             <a href="puzzle.html" class="game-card">
@@ -48,10 +49,48 @@
                     <p class="description">그림을 서로 맞춰라!</p>
                 </div>
             </a>
+            
+            <!-- 두 번째 줄 -->
+            <a href="nonsense.html" class="game-card">
+                <div class="game-icon" id="nonsense-icon"></div>
+                <div class="game-info">
+                    <h2>넌센스 퀴즈</h2>
+                    <p class="description">상상력을 발휘하라!</p>
+                </div>
+            </a>
+            <a href="hiddencatch.html" class="game-card">
+                <div class="game-icon" id="hiddencatch-icon"></div>
+                <div class="game-info">
+                    <h2>틀린그림찾기</h2>
+                    <p class="description">다른 점을 찾아라!</p>
+                </div>
+            </a>
+            <div class="game-card-empty"></div>
+            
+            <a href="race.html" class="game-card prize-card">
+                <div class="game-icon" id="race-icon"></div>
+                <div class="game-info">
+                    <h2>경품 뽑기</h2>
+                    <p class="description">행운의 주인공은?</p>
+                </div>
+            </a>
         </main>
 
         <footer class="footer">
-            <p>© 2025 (주)테크커넥트. All Rights Reserved.</p>
+            <div class="footer-info">
+                <p><strong>Add.</strong> 경기도 성남시 분당구 판교로 697, 분당테크노파크 A동 608-1,2호</p>
+                <p><strong>Tel.</strong> 031.781.0824</p>
+                <p><strong>Fax.</strong> 031.706.0824</p>
+            </div>
+            <div class="footer-links">
+                <div class="link-buttons">
+                    <!-- ✨ 1. 홈페이지 링크 수정 -->
+                    <a href="https://teconnect.co.kr/" target="_blank" class="footer-btn">홈페이지</a>
+                    <!-- ✨ 2. 온라인몰 링크 수정 -->
+                    <a href="https://smartstore.naver.com/teconnect" target="_blank" class="footer-btn online-mall">온라인몰</a>
+                </div>
+                <p class="copyright">COPYRIGHT (c) TEConnect Inc. ALL RIGHTS RESERVED.</p>
+            </div>
         </footer>
     </div>
     <script src="script.js"></script>

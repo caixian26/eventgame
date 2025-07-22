@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>이미지 퍼즐</title>
     <link rel="stylesheet" href="puzzle.css">
+    <!-- ✨ 랭킹 CSS 추가 -->
+    <link rel="stylesheet" href="ranking.css">
 </head>
 <body>
     <div class="game-wrapper" id="gameWrapper">
-        <h1>이미지 퍼즐</h1>
+        <h1>이미지 퍼즐 🖼️</h1>
 
         <div class="level-controls">
             <button class="level-btn active" data-difficulty="normal">보통 (3x3)</button>
@@ -18,9 +20,11 @@
         <div id="fullscreen-target">
             <div id="image-puzzle-container">
                 <div id="image-puzzle-board">
-                    <!-- 힌트 이미지 태그 삭제 -->
+                    <!-- 퍼즐 슬롯은 JS로 생성됩니다 -->
                 </div>
-                <div id="image-puzzle-pieces"></div>
+                <div id="image-puzzle-pieces">
+                    <!-- 퍼즐 조각은 JS로 생성됩니다 -->
+                </div>
             </div>
             
             <div class="overlay" id="startOverlay"><button class="overlay-btn" id="startButton">시작하기</button></div>
@@ -48,14 +52,31 @@
         </div>
 
         <div class="controls">
+            <!-- ✨ 랭킹 보기 버튼 추가 -->
+            <button id="showRankingBtn">랭킹 보기</button>
             <button id="pauseBtn">일시정지</button>
             <button id="retryBtn">다시하기</button>
-            <!-- ✨ 힌트 버튼 삭제 ✨ -->
             <button id="fullscreenBtn">전체화면</button>
             <a href="index.html" class="home-btn">메인으로</a>
         </div>
     </div>
+
+    <!-- ✨ 랭킹 보드 HTML 구조 추가 -->
+    <div id="ranking-board">
+        <div class="ranking-header">
+            <span>🏆 명예의 전당 (<span id="ranking-level-name"></span>) 🏆</span>
+            <button id="ranking-close-btn">×</button>
+        </div>
+        <div class="ranking-list-container">
+            <ul id="ranking-list"></ul>
+        </div>
+        <div class="ranking-footer">
+            <button id="ranking-reset-btn">랭킹 초기화</button>
+        </div>
+    </div>
     
     <script src="puzzle.js"></script>
+    <!-- ✨ 랭킹 JS 추가 -->
+    <script src="ranking.js"></script>
 </body>
 </html>

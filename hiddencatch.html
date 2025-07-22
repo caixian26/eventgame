@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>틀린그림찾기 - HiddenCatch</title>
+    <link rel="stylesheet" href="hiddencatch.css">
+</head>
+<body>
+    <div id="container">
+        <div class="header">
+            <h1>틀린그림찾기 (HiddenCatch) 🕵️</h1>
+            <div class="difficulty-controls">
+                <select id="difficulty">
+                    <option value="1">보통</option>
+                    <option value="2">매우 어려움</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="game-area">
+            <div class="image-container" id="original-image-container">
+                <img id="original-image" src="" alt="원본 이미지">
+            </div>
+            <div class="image-container" id="modified-image-container">
+                <img id="modified-image" src="" alt="틀린 이미지">
+            </div>
+            <div id="game-overlay">
+                <button id="overlayStartBtn">게임 시작</button>
+                <div id="pauseText" class="hidden">일시정지</div>
+            </div>
+            <button id="exitFullscreenBtn" class="hidden">✖</button>
+        </div>
+
+        <div class="info-bar">
+            <div class="info-box">
+                <span class="info-label">찾은 개수</span>
+                <span id="found-counter" class="info-value">--</span>
+            </div>
+            <div class="info-box">
+                <span class="info-label">시간</span>
+                <span id="timer" class="info-value">--:--</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="restartButton">다시시작</button>
+            <button id="pauseButton">일시정지</button>
+            <button id="rankingButton">랭킹 보기</button>
+            <button id="fullscreenButton">전체화면</button>
+            <a href="index.html" class="back-button">메인으로</a>
+        </div>
+    </div>
+
+    <!-- 게임 종료 모달 -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeGameOverModal">×</span>
+            <h2 id="endMessage">🎉 게임 종료! 🎉</h2>
+            <p id="finalTime"></p>
+        </div>
+    </div>
+
+    <!-- ✨ 새로운 랭킹 패널 (우측 상단) -->
+    <div id="ranking-panel" class="hidden">
+        <div class="ranking-header">
+            <span>🏆 명예의 전당 (<span id="ranking-level-name"></span>) 🏆</span>
+            <button id="ranking-close-btn">×</button>
+        </div>
+        <div class="ranking-list-container">
+            <ul id="ranking-list"></ul>
+        </div>
+    </div>
+
+    <script src="hiddencatch.js"></script>
+</body>
+</html>

@@ -26,11 +26,13 @@ html, body {
     overflow-y: auto;
 }
 
+/* ✨ [핵심 수정 1] 헤더 요소를 중앙에 배치하도록 수정 */
 .header-panel {
     flex-shrink: 0;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* 세로로 쌓도록 변경 */
+    align-items: center;   /* 가로 중앙 정렬 */
+    gap: 10px;             /* 제목과 타이머 사이 간격 */
     flex-wrap: wrap;
 }
 
@@ -95,7 +97,14 @@ h1 { color: var(--wall-color); font-size: clamp(1.5em, 5vw, 2.2em); margin: 0; }
 .home-btn { background-color: #6c757d; border-color: #6c757d; color: white; }
 
 #fullscreen-target:fullscreen { background-color: #f0f4f8; padding: 20px; display: flex; justify-content: center; align-items: center; }
-#fullscreen-target:fullscreen .canvas-container { width: 95vh; height: 95vh; max-width: 95vw; max-height: 95vw; }
+
+/* ✨ [핵심 수정 2] 전체화면 시 여백을 늘려 잘림 현상 방지 */
+#fullscreen-target:fullscreen .canvas-container {
+    width: 90vh;
+    height: 90vh;
+    max-width: 90vw;
+    max-height: 90vw;
+}
 
 /* --- 전체화면 종료 버튼 스타일 --- */
 .exit-fullscreen-btn {
@@ -113,9 +122,6 @@ h1 { color: var(--wall-color); font-size: clamp(1.5em, 5vw, 2.2em); margin: 0; }
     line-height: 46px;
     text-align: center;
     cursor: pointer;
-    z-index: 2147483647;
-    /* ✨ [수정] 평소에는 항상 숨겨두도록 display: none; 만 남깁니다. */
+    z-index: 2147473647;
     display: none;
 }
-
-/* ✨ [삭제] body:has(...) 선택자 규칙을 완전히 제거했습니다. */

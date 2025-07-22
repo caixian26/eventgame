@@ -29,17 +29,33 @@ body {
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: clamp(20px, 3vh, 40px);
+    gap: clamp(15px, 2vh, 30px);
     box-sizing: border-box; 
 }
 
+/* ✨ 1. 헤더 레이아웃 최종 수정 */
 .header {
     flex-shrink: 0;
+    position: relative; /* 자식 요소의 absolute 위치 기준점 */
+    display: flex; /* 내부 요소 정렬을 위해 flex 유지 */
+    align-items: center;
+    min-height: 100px; /* 로고 높이를 고려한 최소 높이 확보 */
 }
 
 .logo {
-    max-width: clamp(120px, 15vw, 180px);
-    margin-bottom: clamp(15px, 3vh, 25px);
+    max-width: clamp(150px, 20vw, 220px);
+    margin-bottom: 0;
+    /* 로고를 왼쪽 상단에 위치시키고, 다른 요소와 겹치지 않도록 z-index 설정 */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.title-group {
+    width: 100%; /* 너비를 100%로 설정 */
+    text-align: center; /* 내부 텍스트를 중앙 정렬 */
 }
 
 .header h1 {
@@ -59,17 +75,18 @@ body {
     line-height: 1.6;
 }
 
-.game-selector {
+/* ✨ 2. 게임 그리드 및 카드 스타일 수정 */
+.game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: clamp(15px, 3vw, 30px);
     flex-grow: 1; 
     overflow-y: auto;
-    padding: 10px;
-    padding-right: 15px;
+    padding: 5px;
 }
 
-.game-card {
+.game-card, .game-card-empty {
     background-color: #ffffff;
     border-radius: 15px;
     border: 2px solid #e0e0e0;
@@ -79,10 +96,8 @@ body {
     
     display: flex;
     flex-direction: column;
-    min-height: 280px;
-
-    /* ✨ 핵심 수정: space-between 속성을 제거하여 위에서부터 차례로 쌓이게 합니다. */
-    /* justify-content: space-between; << 이 줄을 삭제 */
+    min-height: 200px;
+    overflow: hidden; /* 내부 요소가 넘치지 않도록 설정 */
 }
 
 .game-card:hover {
@@ -92,39 +107,160 @@ body {
 }
 
 .game-icon {
-    height: 0;
-    padding-bottom: 60%;
+    height: 70%; /* ✨ 카드의 70% 높이를 차지하도록 수정 (이미지 공간 확보) */
     background-size: cover;
     background-position: center;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
 }
 
 #maze-icon { background-image: url('maze_icon.png'); }
 #match-icon { background-image: url('match_icon.png'); }
 #puzzle-icon { background-image: url('puzzle_icon.png'); }
 #catchmind-icon { background-image: url('catchmind_icon.png'); }
+#nonsense-icon { background-image: url('nonsense_icon.png'); }
+/* ✨ 아이콘 ID 수정 */
+#hiddencatch-icon { background-image: url('hiddencatch_icon.png'); }
+#race-icon { background-image: url('race_icon.png'); }
+
 
 .game-info {
-    padding: 20px;
+    height: 30%; /* ✨ 카드의 30% 높이를 차지하도록 수정 */
+    box-sizing: border-box; /* 패딩을 높이에 포함 */
+    padding: 5px 15px; /* ✨ 상하 패딩을 줄여 공간 확보 */
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .game-info h2 {
-    margin: 0 0 10px 0;
-    font-size: 1.5rem;
+    margin: 0 0 4px 0; /* ✨ 제목과 부제목 사이 간격 축소 */
+    font-size: clamp(1rem, 2.2vh, 1.2rem); /* 뷰포트 높이에 반응하는 폰트 크기 */
     font-weight: 700;
+    line-height: 1.2;
 }
 
 .game-info .description {
     margin: 0;
     color: #666;
-    font-size: 1.05rem;
+    font-size: clamp(0.8rem, 1.8vh, 0.95rem); /* 뷰포트 높이에 반응하는 폰트 크기 */
+    line-height: 1.2;
 }
 
+.game-card-empty {
+    background-color: transparent;
+    border: 2px dashed #d0d0d0;
+}
+
+.prize-card {
+    border-color: #ffc107;
+    background-color: #fffbeb;
+}
+.prize-card:hover {
+    border-color: #ffc107;
+    box-shadow: 0 15px 30px rgba(255, 193, 7, 0.2);
+}
+
+/* 푸터 스타일 (변경 없음) */
 .footer {
     padding-top: 20px;
     border-top: 1px solid #e0e0e0;
-    color: #888;
-    font-size: 0.9em;
+    color: #555;
+    font-size: clamp(0.8em, 1.5vw, 0.9em);
     flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-info {
+    text-align: left;
+    line-height: 1.6;
+}
+
+.footer-info p {
+    margin: 0;
+}
+
+.footer-info strong {
+    color: #e53935;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.link-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-btn {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 50px;
+    transition: transform 0.2s ease;
+    font-size: 0.95em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.footer-btn:hover {
+    transform: scale(1.05);
+}
+
+.online-mall {
+    background: linear-gradient(45deg, #84d449, #56b849);
+    box-shadow: 0 4px 10px rgba(100, 200, 100, 0.4);
+}
+
+.footer-btn:not(.online-mall) {
+    background: linear-gradient(45deg, #5c6bc0, #3f51b5);
+    box-shadow: 0 4px 10px rgba(63, 81, 181, 0.3);
+}
+
+.copyright {
+    color: #aaa;
+    font-size: 0.9em;
+    text-align: right;
+}
+
+@media (max-width: 900px) {
+    .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+    .footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-info, .footer-links {
+        align-items: center;
+        text-align: center;
+    }
+    .copyright {
+        text-align: center;
+    }
+}
+
+/* ✨ 화면이 매우 좁을 때 헤더 레이아웃 조정 */
+@media (max-width: 600px) {
+    .header {
+        flex-direction: column;
+        min-height: auto;
+    }
+    .logo {
+        position: static; /* absolute 해제 */
+        transform: none; /* transform 해제 */
+        margin-bottom: 15px;
+    }
 }

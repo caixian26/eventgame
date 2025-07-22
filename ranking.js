@@ -3,7 +3,7 @@ const rankingModule = (() => {
     const MAX_RANKINGS = 20;
 
     let rankingBoardEl, rankingListEl, rankingCloseBtn, rankingLevelNameEl, rankingResetBtn;
-    let currentDisplayedKey = null; // 현재 보여주고 있는 랭킹의 키
+    let currentDisplayedKey = null;
 
     document.addEventListener('DOMContentLoaded', () => {
         rankingBoardEl = document.getElementById('ranking-board');
@@ -26,7 +26,14 @@ const rankingModule = (() => {
     }
 
     function saveRankings(rankings, storageKey) {
-        const sorted = rankings.sort((a, b) => a.time - b.time);
+        // ✨ [핵심 수정] 정렬 기준을 동적으로 변경
+        // entry.score가 있으면 점수(내림차순), 없으면 시간(오름차순)으로 정렬
+        const sorted = rankings.sort((a, b) => {
+            if (a.score !== undefined && b.score !== undefined) {
+                return b.score - a.score; // 점수는 높을수록 좋음
+            }
+            return a.time - b.time; // 시간은 낮을수록 좋음
+        });
         const topRankings = sorted.slice(0, MAX_RANKINGS);
         localStorage.setItem(storageKey, JSON.stringify(topRankings));
     }
@@ -44,24 +51,26 @@ const rankingModule = (() => {
 
         rankings.forEach((entry, index) => {
             const li = document.createElement('li');
+            // ✨ [핵심 수정] 점수인지 시간인지에 따라 다른 단위 표시
+            const value = entry.score !== undefined ? `${entry.score}점` : `${entry.time}초`;
+            
             li.innerHTML = `
                 <span class="rank">${index + 1}등</span>
                 <span class="name">${escapeHtml(entry.name)}</span>
-                <span class="time">${entry.time}초</span>
+                <span class="time">${value}</span>
             `;
             rankingListEl.appendChild(li);
         });
     }
     
-    // 직접 수정해주신 올바른 escapeHtml 함수
     function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') return '';
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        if (typeof unsafe !== 'string') return '';
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
     function showRankingBoard(storageKey, title) {
@@ -93,7 +102,9 @@ const rankingModule = (() => {
         }
     }
 
-    function addScore(storageKey, timeInSeconds, title) {
+    // ✨ [핵심 수정] addScore 함수가 옵션 객체를 받도록 변경하여 유연성 확보
+    function addScore(storageKey, options, title) {
+        const { score, time } = options;
         const playerName = prompt(`🎉 ${title} 성공! 랭킹에 등록할 이름을 입력하세요:`, 'Player1');
 
         if (!playerName || playerName.trim() === '') {
@@ -102,10 +113,17 @@ const rankingModule = (() => {
         }
 
         const rankings = loadRankings(storageKey);
-        const newEntry = {
-            name: playerName.trim(),
-            time: timeInSeconds
-        };
+        const newEntry = { name: playerName.trim() };
+
+        if (score !== undefined) {
+            newEntry.score = score;
+        } else if (time !== undefined) {
+            newEntry.time = time;
+        } else {
+            console.error("점수 또는 시간이 제공되지 않았습니다.");
+            return;
+        }
+
         rankings.push(newEntry);
         saveRankings(rankings, storageKey);
         

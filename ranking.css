@@ -89,6 +89,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: #333; /* ✨ 이 한 줄만 추가하면 됩니다 */
 }
 
 #ranking-list .time {

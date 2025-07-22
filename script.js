@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const gameCards = document.querySelectorAll('.game-card');
+    // ✨ 비어있는 칸을 제외한 실제 게임 카드만 선택
+    const gameCards = document.querySelectorAll('.game-card:not(.game-card-empty)');
+    
     gameCards.forEach(card => {
         card.addEventListener('click', (event) => {
             event.preventDefault(); 

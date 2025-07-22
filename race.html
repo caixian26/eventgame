@@ -11,23 +11,22 @@
         <h1>🏇 경주마를 선택하세요! 🎁</h1>
         
         <div class="race-wrapper">
-            <!-- 1. 말들이 출발하는 라인 -->
-            <div class="start-lane"></div>
+            <div id="start-lane" class="lane"></div>
 
-            <!-- 2. 말이 달려갈 트랙 (경로가 그려질 곳) -->
             <div class="race-track">
                 <svg id="path-svg" width="100%" height="100%"></svg>
-                <div id="moving-horse" class="horse-runner"></div>
+                <!-- 달리는 말은 JS로 동적으로 생성됩니다 -->
             </div>
 
-            <!-- 3. 상품이 있는 도착 라인 -->
-            <div class="finish-lane"></div>
+            <div id="finish-lane" class="lane"></div>
         </div>
 
-        <button id="reset-button" class="hidden">다시하기</button>
+        <div class="controls">
+            <button id="reset-button" class="hidden">다시하기</button>
+            <a href="index.html" class="home-btn">메인으로</a>
+        </div>
     </div>
 
-    <!-- 결과 표시용 모달 -->
     <div id="result-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h2 id="modal-title">🎉 축하합니다! 🎉</h2>

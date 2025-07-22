@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 공통 DOM
+    // --- DOM 요소 ---
     const fullscreenTarget = document.getElementById('fullscreen-target');
     const levelButtons = document.querySelectorAll('.level-btn');
     const startOverlay = document.getElementById('startOverlay'), pauseOverlay = document.getElementById('pauseOverlay'), endOverlay = document.getElementById('endOverlay');
@@ -7,30 +7,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const retryBtn = document.getElementById('retryBtn'), pauseBtn = document.getElementById('pauseBtn'), fullscreenBtn = document.getElementById('fullscreenBtn');
     const moveCounterEl = document.getElementById('moveCounter'), timerEl = document.getElementById('timer'), endDetailsEl = document.getElementById('endDetails');
     const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
-
-    // 이미지 퍼즐 DOM
     const imagePuzzleBoard = document.getElementById('image-puzzle-board');
     const imagePuzzlePieces = document.getElementById('image-puzzle-pieces');
-    
-    // ✨ 힌트 관련 DOM 선택 삭제 ✨
+    const gameWrapper = document.getElementById('gameWrapper');
+    const showRankingBtn = document.getElementById('showRankingBtn');
 
-    // 게임 설정
+    const GAME_ID = 'puzzle';
+
     const gameConfigs = {
-        normal: { gridSize: 3, imageSrc: 'puzzle_park.png', time: 180 },
-        hard: { gridSize: 4, imageSrc: 'puzzle_city.png', time: 300 }
+        normal: { gridSize: 3, imageSrc: 'puzzle_1.png', time: 180, name: '보통' },
+        hard: { gridSize: 4, imageSrc: 'puzzle_2.png', time: 300, name: '매우 어려움' }
     };
-    let currentConfig = gameConfigs.normal;
+    let currentDifficulty = 'normal';
+    let currentConfig = gameConfigs[currentDifficulty];
     let image = new Image();
 
-    // 게임 상태
     let gridSize;
     let moves = 0, timeLeft, timerInterval;
     let isGameRunning = false, isPaused = false;
+    
     let draggedPiece = null;
+    let isDragging = false;
+    let dragStartX = 0, dragStartY = 0;
+    let offsetX = 0, offsetY = 0;
 
-    // --- 게임 로직 ---
+    function preloadImages() {
+        Object.values(gameConfigs).forEach(config => { (new Image()).src = config.imageSrc; });
+    }
+
     function initGame() {
-        isGameRunning = false; clearInterval(timerInterval);
+        isGameRunning = false; isDragging = false; draggedPiece = null;
+        clearInterval(timerInterval);
         moves = 0; moveCounterEl.textContent = '0';
         timerEl.textContent = '--';
         image.src = currentConfig.imageSrc;
@@ -39,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setupImagePuzzle();
             showOverlay(startOverlay);
         };
-        image.onerror = () => { alert('이미지를 불러오는 데 실패했습니다.'); };
+        image.onerror = () => alert('이미지를 불러오는 데 실패했습니다.');
     }
 
     function startGame() {
@@ -51,18 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
         startTimer();
     }
 
+    // ✨ [핵심 수정] endGame 함수의 호출 순서 변경
     function endGame(isSuccess = true) {
         isGameRunning = false; clearInterval(timerInterval);
         const endMessageEl = document.getElementById('endMessage');
+        const timeTaken = currentConfig.time - timeLeft;
+
         if (isSuccess) {
+            // 1. 성공 메시지 내용 준비
             endMessageEl.textContent = '🎉 퍼즐 완성! 🎉';
-            const timeTaken = currentConfig.time - timeLeft;
-            endDetailsEl.textContent = `이동 횟수: ${moves} | 걸린 시간: ${timeTaken}초`;
+            endDetailsEl.innerHTML = `이동 횟수: ${moves}  |  걸린 시간: ${timeTaken}초`;
+            
+            // 2. 랭킹 등록을 먼저 호출 (prompt가 먼저 나타남)
+            const storageKey = `${GAME_ID}_${currentDifficulty}`;
+            rankingModule.addScore(storageKey, { time: timeTaken }, currentConfig.name);
+            
+            // 3. 랭킹 등록이 끝난 후, 최종 결과 모달을 보여줌
+            showOverlay(endOverlay);
+
         } else {
             endMessageEl.textContent = '😭 시간 초과! 😭';
             endDetailsEl.textContent = `다시 도전해보세요!`;
+            showOverlay(endOverlay);
         }
-        showOverlay(endOverlay);
     }
 
     function startTimer() {
@@ -73,25 +91,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isPaused || !isGameRunning) return;
             timeLeft--;
             timerEl.textContent = `${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
-            if (timeLeft <= 0) { endGame(false); }
+            if (timeLeft <= 0) endGame(false);
         }, 1000);
     }
 
     function setupImagePuzzle() {
         gridSize = currentConfig.gridSize;
-        imagePuzzleBoard.innerHTML = ''; 
-        imagePuzzlePieces.innerHTML = '';
+        imagePuzzleBoard.innerHTML = ''; imagePuzzlePieces.innerHTML = '';
         imagePuzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
         imagePuzzleBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+        
         const pieces = [];
         for (let i = 0; i < gridSize * gridSize; i++) {
             const slot = document.createElement('div');
             slot.classList.add('puzzle-slot'); slot.dataset.id = i;
             imagePuzzleBoard.appendChild(slot);
+
             const piece = document.createElement('div');
-            piece.classList.add('puzzle-piece'); piece.dataset.id = i; piece.draggable = true;
-            const pieceWidth = imagePuzzlePieces.clientWidth / 2 - 5;
-            piece.style.width = `${pieceWidth}px`; piece.style.height = `${pieceWidth}px`;
+            piece.classList.add('puzzle-piece'); piece.dataset.id = i; piece.draggable = false;
             piece.style.backgroundImage = `url(${currentConfig.imageSrc})`;
             piece.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
             piece.style.backgroundPosition = `${(i % gridSize) * 100 / (gridSize - 1)}% ${(Math.floor(i / gridSize)) * 100 / (gridSize - 1)}%`;
@@ -99,87 +116,189 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         pieces.sort(() => Math.random() - 0.5);
         pieces.forEach(p => imagePuzzlePieces.appendChild(p));
-        addImagePuzzleListeners();
+        redrawPieces();
     }
 
-    function addImagePuzzleListeners() {
-        document.querySelectorAll('.puzzle-piece').forEach(p => {
-            p.addEventListener('dragstart', e => {
-                draggedPiece = e.target;
-                draggedPiece.originalParent = e.target.parentElement;
-            });
+    function redrawPieces() {
+        const pieceContainerWidth = imagePuzzlePieces.clientWidth;
+        if (pieceContainerWidth === 0) return;
+        const pieceWidth = (pieceContainerWidth / 2) - 10;
+
+        document.querySelectorAll('.puzzle-piece').forEach(piece => {
+            if (piece.parentElement === imagePuzzlePieces) {
+                piece.style.width = `${pieceWidth}px`;
+                piece.style.height = `${pieceWidth}px`;
+            } else {
+                piece.style.width = '';
+                piece.style.height = '';
+            }
         });
-        
-        const allDropTargets = [...document.querySelectorAll('.puzzle-slot'), imagePuzzlePieces];
-        allDropTargets.forEach(target => {
-            target.addEventListener('dragover', e => e.preventDefault());
-            target.addEventListener('drop', handleDrop);
-        });
     }
 
-    function handleDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        let dropTarget = e.target;
-        if (dropTarget.classList.contains('puzzle-piece')) { dropTarget = dropTarget.parentElement; }
-        if (dropTarget.classList.contains('puzzle-slot') || dropTarget.id === 'image-puzzle-pieces') {
-            const existingPiece = dropTarget.firstChild;
-            const sourceParent = draggedPiece.originalParent;
-            dropTarget.appendChild(draggedPiece);
-            if (existingPiece) { sourceParent.appendChild(existingPiece); }
-            if (isGameRunning) { moves++; moveCounterEl.textContent = moves; }
-            checkImageWin();
-        }
-    }
-
-    function checkImageWin() {
+    function checkWin() {
         if (imagePuzzlePieces.children.length > 0) return;
         const slots = imagePuzzleBoard.querySelectorAll('.puzzle-slot');
         for (const slot of slots) {
             const piece = slot.querySelector('.puzzle-piece');
             if (!piece || piece.dataset.id !== slot.dataset.id) return;
         }
-        endGame();
+        endGame(true);
     }
 
-    // ✨ 힌트 기능 관련 함수 및 이벤트 리스너 삭제 ✨
+    function moveOrSwap(piece1, targetContainer) {
+        const piece2 = targetContainer.querySelector('.puzzle-piece');
+        const parent1 = piece1.parentElement;
 
-    function togglePause() { if (!isGameRunning) return; isPaused = !isPaused; showOverlay(isPaused ? pauseOverlay : null); pauseBtn.textContent = isPaused ? '계속하기' : '일시정지'; }
-    function toggleFullscreen() { if (!document.fullscreenElement) { fullscreenTarget.requestFullscreen(); } else { document.exitFullscreen(); } }
+        if (piece2) {
+            parent1.appendChild(piece2);
+        }
+        targetContainer.appendChild(piece1);
+        
+        if (isGameRunning && parent1 !== targetContainer) {
+            moves++;
+            moveCounterEl.textContent = moves;
+        }
+        
+        redrawPieces();
+        checkWin();
+    }
+
+    function handleClick(target) {
+        const clickedPiece = target.closest('.puzzle-piece');
+        if (clickedPiece && clickedPiece.parentElement === imagePuzzlePieces) {
+            const emptySlot = imagePuzzleBoard.querySelector('.puzzle-slot:not(:has(.puzzle-piece))');
+            if (emptySlot) {
+                moveOrSwap(clickedPiece, emptySlot);
+            }
+        }
+    }
+
+    function handleDragStart(e) {
+        const target = e.target.closest('.puzzle-piece');
+        if (!target || !isGameRunning) return;
+        
+        draggedPiece = target;
+        dragStartX = e.clientX || e.touches[0].clientX;
+        dragStartY = e.clientY || e.touches[0].clientY;
+    }
+
+    function handleDragMove(e) {
+        if (!draggedPiece || isDragging) return;
+
+        const currentX = e.clientX || e.touches[0].clientX;
+        const currentY = e.clientY || e.touches[0].clientY;
+        const diffX = Math.abs(currentX - dragStartX);
+        const diffY = Math.abs(currentY - dragStartY);
+
+        if (diffX > 5 || diffY > 5) {
+            isDragging = true;
+            
+            const rect = draggedPiece.getBoundingClientRect();
+            offsetX = dragStartX - rect.left;
+            offsetY = dragStartY - rect.top;
+
+            draggedPiece.classList.add('dragging');
+            draggedPiece.style.width = `${rect.width}px`;
+            draggedPiece.style.height = `${rect.height}px`;
+            draggedPiece.style.position = 'fixed'; 
+            draggedPiece.style.left = `${dragStartX - offsetX}px`;
+            draggedPiece.style.top = `${dragStartY - offsetY}px`;
+        }
+    }
+
+    function updateDragPosition(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        draggedPiece.style.left = `${clientX - offsetX}px`;
+        draggedPiece.style.top = `${clientY - offsetY}px`;
+    }
+
+    function handleDragEnd(e) {
+        if (!draggedPiece) return;
+
+        if (isDragging) {
+            draggedPiece.classList.remove('dragging');
+            draggedPiece.style.position = '';
+            draggedPiece.style.width = '';
+            draggedPiece.style.height = '';
+            draggedPiece.style.left = '';
+            draggedPiece.style.top = '';
+
+            const clientX = e.clientX || e.changedTouches[0].clientX;
+            const clientY = e.clientY || e.changedTouches[0].clientY;
+            
+            draggedPiece.style.display = 'none';
+            const dropTarget = document.elementFromPoint(clientX, clientY);
+            draggedPiece.style.display = '';
+
+            const targetContainer = dropTarget ? dropTarget.closest('.puzzle-slot, #image-puzzle-pieces') : null;
+
+            if (targetContainer) {
+                const finalTarget = dropTarget.classList.contains('puzzle-piece') ? dropTarget.parentElement : targetContainer;
+                moveOrSwap(draggedPiece, finalTarget);
+            }
+        } else {
+            handleClick(e.target);
+        }
+
+        draggedPiece = null;
+        isDragging = false;
+    }
+
+    levelButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            levelButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            currentDifficulty = button.dataset.difficulty;
+            currentConfig = gameConfigs[currentDifficulty];
+            initGame();
+        });
+    });
+
+    showRankingBtn.addEventListener('click', () => {
+        const storageKey = `${GAME_ID}_${currentDifficulty}`;
+        rankingModule.show(storageKey, currentConfig.name);
+    });
+
+    startBtn.addEventListener('click', startGame);
+    modalRestartButton.addEventListener('click', initGame);
+    retryBtn.addEventListener('click', initGame);
+    pauseBtn.addEventListener('click', () => {
+        if (!isGameRunning) return;
+        isPaused = !isPaused;
+        showOverlay(isPaused ? pauseOverlay : null);
+        pauseBtn.textContent = isPaused ? '계속하기' : '일시정지';
+    });
+    fullscreenBtn.addEventListener('click', () => document.fullscreenElement ? document.exitFullscreen() : fullscreenTarget.requestFullscreen());
+    exitFullscreenBtn.addEventListener('click', () => document.exitFullscreen());
+
+    gameWrapper.addEventListener('mousedown', handleDragStart);
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('mousemove', updateDragPosition);
+    document.addEventListener('mouseup', handleDragEnd);
     
+    gameWrapper.addEventListener('touchstart', handleDragStart, { passive: false });
+    document.addEventListener('touchmove', handleDragMove, { passive: false });
+    document.addEventListener('touchmove', updateDragPosition, { passive: false });
+    document.addEventListener('touchend', handleDragEnd);
+
     function showOverlay(overlayToShow) {
         [startOverlay, pauseOverlay, endOverlay].forEach(o => o.classList.add('hidden'));
         if (overlayToShow) overlayToShow.classList.remove('hidden');
     }
 
-    // --- 이벤트 리스너 ---
-    levelButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            levelButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            currentConfig = gameConfigs[button.dataset.difficulty];
-            initGame();
-        });
-    });
-    startBtn.addEventListener('click', startGame);
-    modalRestartButton.addEventListener('click', initGame);
-    retryBtn.addEventListener('click', initGame);
-    pauseBtn.addEventListener('click', togglePause);
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-    
-    function handleResize() {
-        if (isGameRunning) {
-            // 게임 진행 중 리사이즈 시 필요한 로직 (현재는 DOM 기반이라 특별한 처리 불필요)
-        } else {
-            setupImagePuzzle();
-        }
-    }
+    window.addEventListener('resize', redrawPieces);
 
-    window.addEventListener('resize', handleResize);
     document.addEventListener('fullscreenchange', () => {
-        setTimeout(handleResize, 100);
-        exitFullscreenBtn.classList.toggle('hidden', !document.fullscreenElement);
+        const isFullscreen = !!document.fullscreenElement;
+        exitFullscreenBtn.classList.toggle('hidden', !isFullscreen);
+        setTimeout(redrawPieces, 100);
     });
 
+    preloadImages();
     initGame();
 });
