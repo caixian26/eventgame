@@ -17,7 +17,8 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    padding: 30px 15px;
+    /* ★★★ 핵심 수정: 상하 여백을 줄여서 내용이 들어갈 공간 확보 ★★★ */
+    padding: 20px 15px;
     box-sizing: border-box;
 }
 
@@ -26,20 +27,22 @@ body {
     max-width: 500px;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    /* ★★★ 핵심 수정: 요소 간 간격을 줄여서 공간 확보 ★★★ */
+    gap: 20px;
     background-color: var(--surface-color);
-    padding: clamp(30px, 5vw, 50px);
+    /* ★★★ 핵심 수정: 내부 여백을 화면 높이(vh)에 반응하도록 변경 ★★★ */
+    padding: clamp(20px, 4vh, 40px);
     border-radius: 20px;
     box-shadow: 0 10px 40px var(--shadow-color);
     text-align: center;
 }
 
 h2 {
-    font-size: clamp(1.5em, 5vw, 2.2em); /* ✨ 최대 크기 살짝 키움 */
+    font-size: clamp(1.5em, 5vw, 2.2em);
     margin: 0;
     font-weight: 700;
-    color: var(--primary-color); /* ✨ 포인트 컬러 적용으로 강조 */
-    letter-spacing: 1px; /* ✨ 자간 추가로 가독성 향상 */
+    color: var(--primary-color);
+    letter-spacing: 1px;
 }
 
 .qr-code-wrapper {
@@ -58,14 +61,12 @@ h2 {
 }
 
 p {
-    /* ✨ 글자 크기를 반응형으로 변경 */
     font-size: clamp(1em, 3vw, 1.1em);
     line-height: 1.6;
-    opacity: 0.9; /* ✨ 가독성을 위해 선명도 살짝 올림 */
+    opacity: 0.9;
     margin: 0;
 }
 
-/* ✨ 주의 문구 스타일 추가 */
 .warning-text {
     display: block;
     margin-top: 10px;
@@ -75,7 +76,7 @@ p {
 }
 
 .controls {
-    margin-top: 15px;
+    margin-top: 10px; /* 간격을 조금 줄임 */
 }
 
 .home-btn {
