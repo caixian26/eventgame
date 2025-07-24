@@ -8,10 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreDisplay = document.getElementById('score-display');
     const progressDisplay = document.getElementById('progress-display');
     
+    const pencilBtn = document.getElementById('pencil-btn');
+    const eraserBtn = document.getElementById('eraser-btn');
     const hintBtn = document.getElementById('hint-btn');
     const answerBtn = document.getElementById('answer-btn');
     const pauseBtn = document.getElementById('pause-btn');
     const restartBtnMain = document.getElementById('restart-btn-main');
+    // ✨ [핵심 수정] 랭킹 버튼 DOM 요소 추가
+    const rankingBtn = document.getElementById('ranking-btn');
     
     const overlay = document.getElementById('overlay');
     
@@ -150,6 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let quizSet = [], currentRound = 0, score = 0, currentQuiz = {};
     let timerId, isPaused = false, isGameActive = false, isDrawing = false;
     let timerStartTime, timeRemainingOnPause;
+    
+    let currentTool = 'pencil';
 
     function initGame() {
         isGameActive = false;
@@ -171,7 +177,10 @@ document.addEventListener('DOMContentLoaded', () => {
         hintBtn.disabled = true;
         answerBtn.disabled = true;
         pauseBtn.disabled = true;
+        rankingBtn.disabled = true; // ✨ 게임 시작 전 비활성화
         pauseBtn.textContent = '일시정지';
+
+        selectTool('pencil');
     }
 
     function startGame() {
@@ -188,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateScore();
         
         pauseBtn.disabled = false;
+        rankingBtn.disabled = false; // ✨ 게임 시작 후 활성화
         loadNextQuiz();
     }
 
@@ -209,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
         startTimer(TIME_LIMIT);
     }
 
-    // ✨ [핵심 수정] requestAnimationFrame 기반의 정확한 타이머
     function startTimer(duration) {
         cancelAnimationFrame(timerId);
         timerStartTime = Date.now();
@@ -234,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         timerId = requestAnimationFrame(timerLoop);
     }
 
-    // ✨ [핵심 수정] 오버레이 없이 타이머만 제어하는 일시정지
     function togglePause() {
         if (!isGameActive) return;
         isPaused = !isPaused;
@@ -294,9 +302,23 @@ document.addEventListener('DOMContentLoaded', () => {
         resultModal.classList.add('visible');
     }
 
-    // ✨ [핵심 수정] 랭킹 시스템에 점수를 객체 형태로 전달
     function showAndRegisterRanking() {
         rankingModule.addScore(GAME_ID, { score: score }, "넌센스 퀴즈");
+    }
+
+    function selectTool(tool) {
+        currentTool = tool;
+        if (tool === 'pencil') {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.lineWidth = 5;
+            pencilBtn.classList.add('active');
+            eraserBtn.classList.remove('active');
+        } else if (tool === 'eraser') {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.lineWidth = 25;
+            eraserBtn.classList.add('active');
+            pencilBtn.classList.remove('active');
+        }
     }
 
     function resizeCanvas() {
@@ -307,14 +329,21 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.scale(dpr, dpr);
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        ctx.lineWidth = 5;
         ctx.strokeStyle = '#000';
+        selectTool(currentTool);
     }
     function startDrawing(e) { if(isGameActive && !isPaused) { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); } }
     function draw(e) { if(isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } }
     function stopDrawing() { isDrawing = false; }
     function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
+    // ✨ [핵심 수정] 랭킹 버튼 이벤트 리스너 추가
+    rankingBtn.addEventListener('click', () => {
+        rankingModule.show(GAME_ID, "넌센스 퀴즈");
+    });
+    
+    pencilBtn.addEventListener('click', () => selectTool('pencil'));
+    eraserBtn.addEventListener('click', () => selectTool('eraser'));
     hintBtn.addEventListener('click', showHint);
     answerBtn.addEventListener('click', showAnswer);
     pauseBtn.addEventListener('click', togglePause);

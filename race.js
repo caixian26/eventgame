@@ -26,12 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     
     const prizeData = [
-        { name: '최신형 전자칠판', weight: 1 },
+        { name: '최신형 전자칠판', weight: 0.1 },
         { name: '보스턴 백', weight: 5 },
         { name: '빈티지 에코백', weight: 10 },
         { name: '고급 다이어리', weight: 20 },
         { name: '큐브 메모함', weight: 30 },
-        { name: '아이스크림', weight: 134 }
+        { name: '아이스크림', weight: 134.9 }
     ];
 
     let gameInProgress = false;

@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>이미지 퍼즐</title>
     <link rel="stylesheet" href="puzzle.css">
-    <!-- ✨ 랭킹 CSS 추가 -->
     <link rel="stylesheet" href="ranking.css">
 </head>
 <body>
     <div class="game-wrapper" id="gameWrapper">
         <h1>이미지 퍼즐 🖼️</h1>
 
-        <div class="level-controls">
-            <button class="level-btn active" data-difficulty="normal">보통 (3x3)</button>
-            <button class="level-btn" data-difficulty="hard">매우 어려움 (4x4)</button>
-        </div>
+        <!-- ✨ [핵심 수정] 난이도 선택 버튼 제거 -->
         
         <div id="fullscreen-target">
             <div id="image-puzzle-container">
@@ -52,8 +48,8 @@
         </div>
 
         <div class="controls">
-            <!-- ✨ 랭킹 보기 버튼 추가 -->
             <button id="showRankingBtn">랭킹 보기</button>
+            <button id="hintBtn">힌트 보기</button>
             <button id="pauseBtn">일시정지</button>
             <button id="retryBtn">다시하기</button>
             <button id="fullscreenBtn">전체화면</button>
@@ -61,7 +57,6 @@
         </div>
     </div>
 
-    <!-- ✨ 랭킹 보드 HTML 구조 추가 -->
     <div id="ranking-board">
         <div class="ranking-header">
             <span>🏆 명예의 전당 (<span id="ranking-level-name"></span>) 🏆</span>
@@ -76,7 +71,6 @@
     </div>
     
     <script src="puzzle.js"></script>
-    <!-- ✨ 랭킹 JS 추가 -->
     <script src="ranking.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* --- 전체 race.css 코드 (아이콘 이미지 적용) --- */
+/* --- 전체 race.css 코드 (레이아웃 최종 수정) --- */
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
 
@@ -13,17 +13,22 @@ body {
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     background-color: #e3f2fd;
     padding: 20px;
     box-sizing: border-box;
 }
 
+/* ✨ [핵심 수정] 레이아웃 시스템을 flex에서 grid로 변경하여 안정성 확보 */
 .game-container {
     width: 100%;
     max-width: 1200px;
-    display: flex;
-    flex-direction: column;
+    /* display: flex; */
+    /* flex-direction: column; */
+    display: grid; /* flex 대신 grid 사용 */
+    grid-template-rows: auto 1fr auto; /* [제목] [경주트랙] [컨트롤] 3단 구조로 명확히 정의 */
+    height: calc(100vh - 40px); /* 화면 높이를 거의 꽉 채우도록 설정 (패딩 고려) */
+    max-height: 900px; /* 너무 길어지지 않도록 최대 높이 설정 */
     text-align: center;
     background: white;
     padding: clamp(15px, 2vw, 30px);
@@ -41,8 +46,8 @@ h1 {
     display: grid;
     grid-template-columns: 1.5fr 6fr 1.5fr;
     gap: 15px;
-    height: 60vh;
-    min-height: 400px;
+    /* height와 min-height를 제거하고 grid의 1fr이 높이를 제어하도록 함 */
+    min-height: 0; /* grid 레이아웃에서 높이 유연성을 위해 추가 */
     margin: 10px 0;
 }
 
@@ -97,12 +102,11 @@ h1 {
     opacity: 0.6;
 }
 
-/* ✨ [핵심 수정] 이모지 대신 이미지 스타일을 적용 */
 .horse-icon-img {
-    width: 60px;  /* 이미지 너비 */
-    height: 60px; /* 이미지 높이 */
+    width: 60px;
+    height: 60px;
     margin-right: 8px;
-    object-fit: contain; /* 이미지가 잘리지 않고 비율에 맞게 표시되도록 함 */
+    object-fit: contain;
 }
 
 .track-point {
@@ -153,6 +157,7 @@ h1 {
     justify-content: center;
     gap: 15px;
     flex-wrap: wrap;
+    position: relative; /* z-index 컨텍스트를 위해 추가 */
 }
 #reset-button, .home-btn {
     padding: clamp(10px, 2vh, 14px) clamp(20px, 3vw, 30px);
@@ -189,9 +194,10 @@ h1 {
         flex-direction: column;
         text-align: center;
     }
-    /* ✨ [핵심 수정] 모바일 화면에서 이미지와 텍스트 간격 조정 */
     .horse-icon-img { 
         margin-right: 0; 
         margin-bottom: 4px; 
     }
 }
+
+/* 이전의 max-height 미디어 쿼리는 grid 레이아웃으로 대체되어 필요 없어졌습니다. */

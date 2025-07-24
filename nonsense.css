@@ -54,6 +54,30 @@ h1 { color: #2c3e50; flex-shrink: 0; font-size: clamp(1.5rem, 5vw, 2.2rem); }
 .game-controls button, .home-btn { padding: 10px 20px; font-size: 1rem; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; text-decoration: none; color: white; }
 .game-controls button:disabled { background-color: #ccc; cursor: not-allowed; }
 
+.tool-btn {
+    padding: 8px;
+    font-size: 1.2rem;
+    min-width: 45px;
+    line-height: 1;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 2px solid #ccc;
+}
+.tool-btn.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+#hint-btn { background-color: #ffc107; }
+#answer-btn { background-color: #28a745; }
+#pause-btn { background-color: #17a2b8; }
+#restart-btn-main { background-color: #dc3545; }
+.home-btn { background-color: #6c757d; }
+
+/* ✨ [핵심 수정] 랭킹 보기 버튼 스타일 추가 */
+#ranking-btn { background-color: #8e44ad; }
+
 #hint-btn { background-color: #ffc107; }
 #answer-btn { background-color: #28a745; }
 #pause-btn { background-color: #17a2b8; }
