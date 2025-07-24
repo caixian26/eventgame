@@ -72,22 +72,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
+    // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    // ★ 최종 수정: 모든 브라우저에서 동작하는 '만능 전체화면' 함수 구현 ★
+    // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    function openFullscreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) { /* Firefox */
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) { /* IE/Edge */
+            element.msRequestFullscreen();
+        }
+    }
+
+    function closeFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { /* Firefox */
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE/Edge */
+            document.msExitFullscreen();
+        }
+    }
+
     // 이벤트 리스너
     overlayStartBtn.addEventListener('click', startGame);
     restartButton.addEventListener('click', initGame);
     pauseButton.addEventListener('click', togglePause);
-    fullscreenButton.addEventListener('click', () => gameArea.requestFullscreen());
-    exitFullscreenBtn.addEventListener('click', () => document.exitFullscreen());
+    // ★★★ 전체화면 버튼에 새로운 '만능' 함수 연결 ★★★
+    fullscreenButton.addEventListener('click', () => openFullscreen(gameArea));
+    exitFullscreenBtn.addEventListener('click', () => closeFullscreen());
     modifiedImageContainer.addEventListener('click', handleImageClick);
     closeGameOverModal.addEventListener('click', () => gameOverModal.classList.remove('show'));
     document.addEventListener('fullscreenchange', () => {
         exitFullscreenBtn.classList.toggle('hidden', !document.fullscreenElement);
         setTimeout(redrawMarkers, 50);
     });
+    // ★★★ 웹킷(webkit) 기반 브라우저를 위한 추가 이벤트 리스너 ★★★
+    document.addEventListener('webkitfullscreenchange', () => {
+        exitFullscreenBtn.classList.toggle('hidden', !document.webkitIsFullScreen);
+        setTimeout(redrawMarkers, 50);
+    });
     rankingButton.addEventListener('click', showRanking);
     rankingCloseBtn.addEventListener('click', () => rankingPanel.classList.add('hidden'));
     resetRankingButton.addEventListener('click', resetRanking);
-    // ★★★ 창 크기가 변경될 때마다 마커를 다시 그리도록 이벤트 추가 ★★★
     window.addEventListener('resize', redrawMarkers);
 
     function initGame() {
@@ -116,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getRenderedImageInfo(imgElement) {
         const { naturalWidth, naturalHeight, clientWidth, clientHeight } = imgElement;
-        if (!naturalWidth || !naturalHeight) return null; // 이미지가 로드되지 않은 경우
+        if (!naturalWidth || !naturalHeight) return null;
         const naturalAspectRatio = naturalWidth / naturalHeight;
         const clientAspectRatio = clientWidth / clientHeight;
         let renderedWidth, renderedHeight, xOffset, yOffset;
@@ -174,9 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (foundCount === totalDifferences) endGame();
     }
 
-    // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-    // ★ 최종 수정: 'O' 마커 표시 로직을 클릭 판정과 동일한 픽셀 기반으로 통일 ★
-    // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
     function createMarker(data, type) {
         const marker = document.createElement('div');
         marker.className = `marker ${type}`;
@@ -185,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             marker.textContent = 'O';
             const img = modifiedImage;
             const info = getRenderedImageInfo(img);
-            if (!info) return; // 이미지가 준비되지 않았으면 마커를 그리지 않음
+            if (!info) return;
             const { renderedWidth, xOffset, yOffset } = info;
             
             const scale = renderedWidth / img.naturalWidth;
