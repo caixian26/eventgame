@@ -23,8 +23,6 @@ body {
 .game-container {
     width: 100%;
     max-width: 1200px;
-    /* display: flex; */
-    /* flex-direction: column; */
     display: grid; /* flex 대신 grid 사용 */
     grid-template-rows: auto 1fr auto; /* [제목] [경주트랙] [컨트롤] 3단 구조로 명확히 정의 */
     height: calc(100vh - 40px); /* 화면 높이를 거의 꽉 채우도록 설정 (패딩 고려) */
@@ -46,7 +44,6 @@ h1 {
     display: grid;
     grid-template-columns: 1.5fr 6fr 1.5fr;
     gap: 15px;
-    /* height와 min-height를 제거하고 grid의 1fr이 높이를 제어하도록 함 */
     min-height: 0; /* grid 레이아웃에서 높이 유연성을 위해 추가 */
     margin: 10px 0;
 }
@@ -200,4 +197,17 @@ h1 {
     }
 }
 
-/* 이전의 max-height 미디어 쿼리는 grid 레이아웃으로 대체되어 필요 없어졌습니다. */
+/* [추가] 초기화 버튼 스타일 */
+#full-reset-button {
+    padding: clamp(10px, 2vh, 14px) clamp(20px, 3vw, 30px);
+    font-size: clamp(1rem, 2.5vh, 1.2rem);
+    font-weight: bold;
+    border: none; border-radius: 8px; cursor: pointer;
+    background-color: #ff7043; /* 주황색 계열 */
+    color: white;
+    transition: background-color 0.2s;
+    text-decoration: none;
+}
+#full-reset-button:hover {
+    background-color: #f4511e; /* 더 진한 주황색 */
+}
