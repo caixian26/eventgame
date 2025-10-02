@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    background-color: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow: hidden;
+    padding: 1rem; /* 화면 가장자리에 여백 추가 */
+    box-sizing: border-box;
+}
+
+/* ✨ 1. 반응형 게임 컨테이너 */
+#game-container {
+    display: flex;
+    flex-direction: column;
+    /* 화면 너비의 95% 또는 높이의 95% 중 작은 값을 기준으로 크기 결정 */
+    width: 95vmin;
+    height: calc(95vmin / 8 * 7); /* 800:700 비율 유지 */
+    max-width: 1000px; /* 너무 커지는 것을 방지 */
+    max-height: 875px; /* 너무 커지는 것을 방지 */
+    border: 3px solid #0f3460;
+    box-shadow: 0 0 20px rgba(27, 94, 155, 0.7);
+    background-color: #000;
+}
+
+#game-canvas {
+    width: 100%;
+    height: 85.71%; /* 600px / 700px */
+    display: block;
+}
+
+.controls {
+    height: 14.29%; /* 100px / 700px */
+    background-color: #16213e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5vw;
+    padding: 0 20px;
+    border-top: 3px solid #0f3460;
+}
+
+.controls button, .controls a {
+    padding: 12px 20px;
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.2s, transform 0.1s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.controls button:active, .controls a:active {
+    transform: scale(0.95);
+}
+
+#ranking-btn { background-color: #0f3460; }
+#ranking-btn:hover { background-color: #1a4a8a; }
+#pause-btn { background-color: #ff9800; }
+#pause-btn:hover { background-color: #f57c00; }
+#restart-btn { background-color: #4caf50; }
+#restart-btn:hover { background-color: #388e3c; }
+#fullscreen-btn { background-color: #673ab7; }
+#fullscreen-btn:hover { background-color: #512da8; }
+.home-btn { background-color: #78909c; }
+.home-btn:hover { background-color: #546e7a; }
+
+/* ✨ 2. 전체화면 모드 스타일 */
+#game-container:fullscreen {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border: none;
+}
+
+/* --- 랭킹 보드 스타일 (이전과 동일) --- */
+#ranking-board {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center;
+    z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+}
+#ranking-board.visible { opacity: 1; visibility: visible; }
+.ranking-content {
+    background: #1a1a2e; border: 2px solid #0f3460; border-radius: 15px;
+    width: 90%; max-width: 500px; padding: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+    transform: scale(0.9); transition: transform 0.3s;
+}
+#ranking-board.visible .ranking-content { transform: scale(1); }
+.ranking-header { display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 1px solid #0f3460; padding-bottom: 10px; margin-bottom: 15px; }
+#ranking-level-name { margin: 0; font-size: 1.5rem; }
+#ranking-close-btn { background: none; border: none; color: white; font-size: 2rem; cursor: pointer; }
+#ranking-list { list-style: none; padding: 0; margin: 0; max-height: 40vh; overflow-y: auto; }
+#ranking-list li { display: flex; justify-content: space-between; padding: 10px; color: #ddd; border-radius: 5px; }
+#ranking-list li:nth-child(odd) { background-color: #16213e; }
+#ranking-list .rank { font-weight: bold; color: #f9d423; flex-basis: 15%; }
+#ranking-list .name { flex-basis: 55%; }
+#ranking-list .time { flex-basis: 30%; text-align: right; }
+#ranking-reset-btn { margin-top: 20px; background-color: #e94560; width: 100%; padding: 10px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }

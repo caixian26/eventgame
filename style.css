@@ -121,6 +121,7 @@ body {
 #nonsense-icon { background-image: url('nonsense_icon.png'); }
 /* ✨ 아이콘 ID 수정 */
 #hiddencatch-icon { background-image: url('hiddencatch_icon.png'); }
+#flight-icon { background-image: url('flight.png'); }
 #race-icon { background-image: url('race_icon.png'); }
 
 

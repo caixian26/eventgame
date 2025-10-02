@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비행선 슈팅 게임</title>
+    <link rel="stylesheet" href="flight.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        
+        <!-- ✨ 컨트롤 바 UI 추가 -->
+        <div class="controls">
+            <button id="ranking-btn">랭킹보기</button>
+            <button id="pause-btn">일시정지</button>
+            <button id="restart-btn">다시하기</button>
+            <button id="fullscreen-btn">전체화면</button>
+            <a href="index.html" class="home-btn">메인으로</a>
+        </div>
+    </div>
+
+    <!-- ✨ 랭킹 보드 UI 추가 -->
+    <div id="ranking-board">
+        <div class="ranking-content">
+            <div class="ranking-header">
+                <h2 id="ranking-level-name">게임 랭킹</h2>
+                <button id="ranking-close-btn" title="닫기">×</button>
+            </div>
+            <ul id="ranking-list">
+                <!-- 랭킹 데이터가 여기에 동적으로 추가됩니다. -->
+            </ul>
+            <button id="ranking-reset-btn">랭킹 초기화</button>
+        </div>
+    </div>
+
+    <!-- ✨ ranking.js를 flight.js보다 먼저 불러와야 합니다. -->
+    <script src="ranking.js"></script>
+    <script src="flight.js"></script>
+</body>
+</html>
